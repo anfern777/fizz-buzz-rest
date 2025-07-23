@@ -7,8 +7,13 @@ import (
 )
 
 type config struct {
-	env  string
-	port int
+	env     string
+	port    int
+	limiter struct {
+		rate    float64
+		burst   int
+		enabled bool
+	}
 }
 
 type application struct {
@@ -22,6 +27,11 @@ func main() {
 
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development | staging | production)")
 	flag.IntVar(&cfg.port, "port", 8000, "server port")
+
+	flag.Float64Var(&cfg.limiter.rate, "limiter-rate", 2, "Rate limiter requests per second")
+	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter burst limit")
+	flag.BoolVar(&cfg.limiter.enabled, "limiter-enabled", true, "Enable rate limiter")
+
 	flag.Parse()
 
 	app := &application{
