@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -12,7 +13,7 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 		defer func() {
 			if pv := recover(); pv != nil {
 				w.Header().Set("Connection", "close")
-				app.serverErrorResponse(w, r)
+				app.serverErrorResponse(w, r, fmt.Errorf("%v", pv))
 			}
 		}()
 		next.ServeHTTP(w, r)
