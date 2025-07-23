@@ -30,7 +30,7 @@ func main() {
 	}
 
 	if err := app.serve(); err != nil {
-		app.logger.Error("server could not listen", "reason", err.Error())
+		logger.Error(err.Error())
 		os.Exit(1)
 	}
 }
