@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log/slog"
 	"os"
+	"strings"
 )
 
 type config struct {
@@ -14,6 +15,7 @@ type config struct {
 		burst   int
 		enabled bool
 	}
+	trustedOrigins []string
 }
 
 type application struct {
@@ -31,6 +33,11 @@ func main() {
 	flag.Float64Var(&cfg.limiter.rate, "limiter-rate", 2, "Rate limiter requests per second")
 	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter burst limit")
 	flag.BoolVar(&cfg.limiter.enabled, "limiter-enabled", true, "Enable rate limiter")
+
+	flag.Func("trusted-origins", "Trusted CORS origins", func(val string) error {
+		cfg.trustedOrigins = strings.Fields(val)
+		return nil
+	})
 
 	flag.Parse()
 

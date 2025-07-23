@@ -3,10 +3,23 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"slices"
 	"time"
 
 	"golang.org/x/time/rate"
 )
+
+func (app *application) enableCORS(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+		w.Header().Add("Vary", "Origin")
+
+		if slices.Contains(app.config.trustedOrigins, origin) {
+			w.Header().Add("Access-Control-Allow-Origin", origin)
+		}
+		next.ServeHTTP(w, r)
+	})
+}
 
 func (app *application) recoverPanic(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
