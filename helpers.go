@@ -31,7 +31,8 @@ func getRemoteIP(r *http.Request) string {
 	return ""
 }
 
-// converts data into a json string, adds the necessary headers and writes to the ResponseWriter
+// converts data into a json string, adds the necessary
+// headers and writes to the ResponseWriter
 func (app *application) toJsonResponse(w http.ResponseWriter, status int, data any, headers http.Header) error {
 	maps.Copy(w.Header(), headers)
 
