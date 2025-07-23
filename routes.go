@@ -13,5 +13,5 @@ func (app *application) routes() http.Handler {
 	router.HandlerFunc(http.MethodGet, "/fizzbuzz", app.fizzbuzzHandler)
 	router.HandlerFunc(http.MethodGet, "/stats", app.statisticsHandler)
 
-	return router
+	return app.rateLimiter(router)
 }
