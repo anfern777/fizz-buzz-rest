@@ -7,7 +7,7 @@ import (
 	"net/http"
 )
 
-type wraper map[string]any
+type wrapper map[string]any
 
 // Returns the remote IP of the client. It gives precedence to
 // X-Forwarded-For and X-Real-IP request headers. If these are
