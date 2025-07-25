@@ -52,11 +52,12 @@ func (app *application) toJSONResponse(w http.ResponseWriter, status int, data a
 // computeStats returns the most frequently requested
 // fizzbuzz parameters and their hit count.
 func (app *application) computeStats() (fizzbuzzParams, int) {
+	var maxHits int
+	var topParams fizzbuzzParams
+
 	app.stats.mu.RLock()
 	defer app.stats.mu.RUnlock()
 
-	var maxHits int
-	var topParams fizzbuzzParams
 	for params, hits := range app.stats.requests {
 		if hits > maxHits {
 			maxHits = hits

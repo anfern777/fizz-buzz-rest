@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"slices"
@@ -8,6 +9,28 @@ import (
 
 	"golang.org/x/time/rate"
 )
+
+type contextKey string
+
+const paramsCtxKey = contextKey("params")
+
+func (app *application) collectStats(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		params, err := parseFizzbuzzReq(r)
+		if err == nil {
+			ctx := context.WithValue(r.Context(), paramsCtxKey, params)
+			r = r.WithContext(ctx)
+		}
+
+		next.ServeHTTP(w, r)
+
+		if params, ok := r.Context().Value(paramsCtxKey).(*fizzbuzzParams); ok {
+			app.stats.mu.Lock()
+			app.stats.requests[*params]++
+			app.stats.mu.Unlock()
+		}
+	})
+}
 
 func (app *application) enableCORS(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
