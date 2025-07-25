@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"slices"
+	"sync"
 	"time"
 
 	"golang.org/x/time/rate"
@@ -17,18 +18,19 @@ const paramsCtxKey = contextKey("params")
 func (app *application) collectStats(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params, err := parseFizzbuzzReq(r)
-		if err == nil {
-			ctx := context.WithValue(r.Context(), paramsCtxKey, params)
-			r = r.WithContext(ctx)
+		if err != nil {
+			app.serverErrorResponse(w, r, err)
+			next.ServeHTTP(w, r)
 		}
+
+		ctx := context.WithValue(r.Context(), paramsCtxKey, params)
+		r = r.WithContext(ctx)
+
+		app.stats.mu.Lock()
+		app.stats.requests[*params]++
+		app.stats.mu.Unlock()
 
 		next.ServeHTTP(w, r)
-
-		if params, ok := r.Context().Value(paramsCtxKey).(*fizzbuzzParams); ok {
-			app.stats.mu.Lock()
-			app.stats.requests[*params]++
-			app.stats.mu.Unlock()
-		}
 	})
 }
 
@@ -65,31 +67,45 @@ func (app *application) rateLimiter(next http.Handler) http.Handler {
 		limiter  *rate.Limiter
 		lastSeen time.Time
 	}
-	clients := make(map[string]*client)
+
+	var (
+		mu      sync.Mutex
+		clients = make(map[string]*client)
+	)
 
 	go func() {
 		for {
 			time.Sleep(5 * time.Minute)
+			mu.Lock()
 			for ip, client := range clients {
 				if time.Since(client.lastSeen) > 10*time.Minute {
 					delete(clients, ip)
 				}
 			}
+			mu.Unlock()
 		}
 	}()
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ip := getRemoteIP(r)
-		_, ok := clients[ip]
-		if !ok {
+
+		mu.Lock()
+
+		if _, ok := clients[ip]; !ok {
 			clients[ip] = &client{
-				limiter:  rate.NewLimiter(rate.Limit(app.config.limiter.rate), app.config.limiter.burst),
-				lastSeen: time.Now(),
+				limiter: rate.NewLimiter(rate.Limit(app.config.limiter.rate), app.config.limiter.burst),
 			}
 		}
+
+		clients[ip].lastSeen = time.Now()
+
 		if !clients[ip].limiter.Allow() {
+			mu.Unlock()
 			app.errorResponse(w, r, http.StatusTooManyRequests, "rate limit exceeded")
+			return
 		}
+
+		mu.Unlock()
 
 		next.ServeHTTP(w, r)
 	})

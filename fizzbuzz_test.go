@@ -1,7 +1,9 @@
 package main
 
 import (
+	"context"
 	"errors"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -9,6 +11,37 @@ import (
 	"strconv"
 	"testing"
 )
+
+func TestFizzbuzzHandler_Success(t *testing.T) {
+	app := &application{}
+
+	params := &fizzbuzzParams{
+		Int1:  3,
+		Int2:  5,
+		Limit: 15,
+		Str1:  "fizz",
+		Str2:  "buzz",
+	}
+
+	ctx := context.WithValue(context.Background(), paramsCtxKey, params)
+	req := httptest.NewRequest(http.MethodGet, "/fizzbuzz", nil).WithContext(ctx)
+	rr := httptest.NewRecorder()
+
+	app.fizzbuzzHandler(rr, req)
+
+	resp := rr.Result()
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("expected status 200 OK, got %d", resp.StatusCode)
+	}
+
+	body, _ := io.ReadAll(resp.Body)
+	expected := `{"result":["1","2","fizz","4","buzz","fizz","7","8","fizz","buzz","11","fizz","13","14","fizzbuzz"]}` + "\n"
+	if string(body) != expected {
+		t.Errorf("expected response body:\n%s\ngot:\n%s", expected, string(body))
+	}
+}
 
 func TestFizzbuzz(t *testing.T) {
 	tests := []struct {
