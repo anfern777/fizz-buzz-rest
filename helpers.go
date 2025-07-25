@@ -5,6 +5,7 @@ import (
 	"maps"
 	"net"
 	"net/http"
+	"strings"
 )
 
 type wrapper map[string]any
@@ -13,22 +14,20 @@ type wrapper map[string]any
 // X-Forwarded-For and X-Real-IP request headers. If these are
 // not present, it gets the remote IP from RemoteAddr.
 func getRemoteIP(r *http.Request) string {
-	xff := r.Header.Get("X-Forwarded-For")
-	if xff != "" {
-		return xff
+	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
+		return strings.TrimSpace(strings.Split(xff, ",")[0])
 	}
 
-	xrIP := r.Header.Get("X-Real-IP")
-	if xrIP != "" {
+	if xrIP := r.Header.Get("X-Real-Ip"); xrIP != "" {
 		return xrIP
 	}
 
 	ip, _, err := net.SplitHostPort(r.RemoteAddr)
 	if err != nil {
-		return ip
+		return ""
 	}
 
-	return ""
+	return ip
 }
 
 // converts data into a json string, adds the necessary
@@ -48,4 +47,22 @@ func (app *application) toJSONResponse(w http.ResponseWriter, status int, data a
 	w.Write(js)
 
 	return nil
+}
+
+// computeStats returns the most frequently requested
+// fizzbuzz parameters and their hit count.
+func (app *application) computeStats() (fizzbuzzParams, int) {
+	app.stats.mu.RLock()
+	defer app.stats.mu.RUnlock()
+
+	var maxHits int
+	var topParams fizzbuzzParams
+	for params, hits := range app.stats.requests {
+		if hits > maxHits {
+			maxHits = hits
+			topParams = params
+		}
+	}
+
+	return topParams, maxHits
 }

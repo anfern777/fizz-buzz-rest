@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 	"strings"
+	"sync"
 )
 
 type config struct {
@@ -18,9 +19,15 @@ type config struct {
 	trustedOrigins []string
 }
 
+type statsStore struct {
+	requests map[fizzbuzzParams]int
+	mu       sync.RWMutex
+}
+
 type application struct {
 	config config
 	logger *slog.Logger
+	stats  *statsStore
 }
 
 func main() {
@@ -44,6 +51,9 @@ func main() {
 	app := &application{
 		config: cfg,
 		logger: logger,
+		stats: &statsStore{
+			requests: make(map[fizzbuzzParams]int),
+		},
 	}
 
 	if err := app.serve(); err != nil {

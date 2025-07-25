@@ -29,33 +29,35 @@ func (e invalidParamError) Error() string {
 }
 
 type fizzbuzzParams struct {
-	int1, int2, limit int
-	str1, str2        string
+	Int1  int    `json:"int1"`
+	Int2  int    `json:"int2"`
+	Limit int    `json:"limit"`
+	Str1  string `json:"str1"`
+	Str2  string `json:"str2"`
 }
 
 func (app *application) fizzbuzzHandler(w http.ResponseWriter, r *http.Request) {
-	params, err := parseFizzbuzzReq(r)
-	if err != nil {
-		app.errorResponse(w, r, http.StatusBadRequest, err.Error())
-		return
-	}
+	params := r.Context().Value(paramsCtxKey).(*fizzbuzzParams)
 
 	res := fizzbuzz(params)
 
-	app.toJSONResponse(w, http.StatusOK, &wrapper{"result": res}, nil)
+	err := app.toJSONResponse(w, http.StatusOK, &wrapper{"result": res}, nil)
+	if err != nil {
+		app.serverErrorResponse(w, r, err)
+	}
 }
 
 func fizzbuzz(params *fizzbuzzParams) []string {
-	var res = make([]string, 0, params.limit)
-	for i := 1; i <= params.limit; i++ {
+	var res = make([]string, 0, params.Limit)
+	for i := 1; i <= params.Limit; i++ {
 		var added bool
 		var strBuilder strings.Builder
-		if i%params.int1 == 0 {
-			strBuilder.WriteString(params.str1)
+		if i%params.Int1 == 0 {
+			strBuilder.WriteString(params.Str1)
 			added = true
 		}
-		if i%params.int2 == 0 {
-			strBuilder.WriteString(params.str2)
+		if i%params.Int2 == 0 {
+			strBuilder.WriteString(params.Str2)
 			added = true
 		}
 		if !added {
@@ -97,11 +99,11 @@ func parseFizzbuzzReq(r *http.Request) (*fizzbuzzParams, error) {
 	str2 := queryParams.Get("str2")
 
 	return &fizzbuzzParams{
-		int1:  int1,
-		int2:  int2,
-		limit: limit,
-		str1:  str1,
-		str2:  str2,
+		Int1:  int1,
+		Int2:  int2,
+		Limit: limit,
+		Str1:  str1,
+		Str2:  str2,
 	}, nil
 }
 

@@ -2,16 +2,14 @@ package main
 
 import (
 	"net/http"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 func (app *application) routes() http.Handler {
-	router := httprouter.New()
+	mux := http.NewServeMux()
 
-	router.HandlerFunc(http.MethodGet, "/healthcheck", app.healthcheckHandler)
-	router.HandlerFunc(http.MethodGet, "/fizzbuzz", app.fizzbuzzHandler)
-	router.HandlerFunc(http.MethodGet, "/stats", app.statisticsHandler)
+	mux.HandleFunc("GET /healthcheck", app.healthcheckHandler)
+	mux.HandleFunc("GET /stats", app.statsHandler)
+	mux.Handle("GET /fizzbuzz", app.collectStats(http.HandlerFunc(app.fizzbuzzHandler)))
 
-	return app.recoverPanic(app.enableCORS(app.rateLimiter(router)))
+	return app.recoverPanic(app.enableCORS(app.rateLimiter(mux)))
 }
