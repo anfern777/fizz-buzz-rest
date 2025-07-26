@@ -1,0 +1,17 @@
+# Git
+.git
+.gitignore
+
+# IDE / Editor config
+.vscode
+
+# Local binaries and artifacts
+/bin
+/vendor
+
+# deploy folder
+deploy/
+
+# other
+LICENSE
+README.md

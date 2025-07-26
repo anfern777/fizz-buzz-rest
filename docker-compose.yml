@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+  app:
+    image: fizzbuzz
+    build:
+      context: .
+      target: development
+    volumes:
+      - ./:/app
+    networks:
+      - fizzbuzz_net
+    ports:
+      - 8000:8000
+
+networks:
+  fizzbuzz_net:

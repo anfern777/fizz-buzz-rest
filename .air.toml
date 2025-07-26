@@ -1,0 +1,14 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+cmd = "go build -o ./tmp/main ./cmd"
+bin = "tmp/main"
+include_ext = ["go"]
+
+[log]
+time = true
+
+[misc]
+# Delete tmp directory on exit.
+clean_on_exit = true
