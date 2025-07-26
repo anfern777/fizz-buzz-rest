@@ -6,7 +6,7 @@ help:
 ## run: run the fuzzbuzz api
 .PHONY: run
 run:
-	@go run .
+	@go run ./cmd
 
 .PHONY: build
 build:

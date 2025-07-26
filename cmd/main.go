@@ -2,10 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log/slog"
 	"os"
 	"strings"
 	"sync"
+
+	"github.com/anfern777/fizz-buzz-rest/internal"
 )
 
 type config struct {
@@ -30,6 +33,10 @@ type application struct {
 	stats  *statsStore
 }
 
+var (
+	version = internal.Version()
+)
+
 func main() {
 	var cfg config
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
@@ -45,8 +52,15 @@ func main() {
 		cfg.trustedOrigins = strings.Fields(val)
 		return nil
 	})
+	showVersion := flag.Bool("version", false, "Display version and exit")
 
 	flag.Parse()
+
+	fmt.Println(*showVersion)
+	if *showVersion {
+		fmt.Printf("Version:\t%s\n", version)
+		os.Exit(0)
+	}
 
 	app := &application{
 		config: cfg,
