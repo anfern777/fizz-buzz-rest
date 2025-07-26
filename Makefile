@@ -8,6 +8,11 @@ help:
 run:
 	@go run .
 
+.PHONY: build
+build:
+	@echo 'Building api...'
+	 CGO_ENABLED=0 go build -ldflags="-s" -o=./bin/fizzbuzz ./cmd
+
 ## tidy: tidy module dependencies and format .go files
 .PHONY: tidy
 tidy:
