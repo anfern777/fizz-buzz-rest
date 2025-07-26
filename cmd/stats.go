@@ -12,10 +12,15 @@ func (app *application) statsHandler(w http.ResponseWriter, r *http.Request) {
 
 	topParams, maxHits := app.computeStats()
 
-	res := wrapper{"stats": response{
-		Parameters: topParams,
-		Hits:       maxHits,
-	}}
+	var res wrapper
+	if maxHits == 0 {
+		res = wrapper{"stats": "no stats available yet"}
+	} else {
+		res = wrapper{"stats": response{
+			Parameters: topParams,
+			Hits:       maxHits,
+		}}
+	}
 
 	err := app.toJSONResponse(w, http.StatusOK, res, nil)
 	if err != nil {
