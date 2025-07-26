@@ -19,8 +19,8 @@ func (app *application) collectStats(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params, err := parseFizzbuzzReq(r)
 		if err != nil {
-			app.serverErrorResponse(w, r, err)
-			next.ServeHTTP(w, r)
+			app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+			return
 		}
 
 		ctx := context.WithValue(r.Context(), paramsCtxKey, params)
