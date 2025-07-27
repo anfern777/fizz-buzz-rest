@@ -148,14 +148,9 @@ This project uses GitHub Actions for CI. The workflow is triggered on every pull
 - Runs unit tests with race detection.
 - Performs static analysis and security vulnerability audits.
 
-> Note: All checks must pass before a pull request can be merged. This is enforced by branch protection rules.
-
-The CI configuration can be found in .github/workflows/pr-build-test.yml.
-
 > **Tests must pass before a PR can be merged** (enforced via GitHub branch protection rules).
 
-
-CI configuration lives in [`/.github/workflows/ci.yml`](.github/workflows/pr-build-test.yml).
+The CI configuration can be found in .github/workflows/pr-build-test.yml.
 
 ## Key Behaviors
 - If str1 or str2 parameters are submitted empty, they are treated as valid empty strings.
