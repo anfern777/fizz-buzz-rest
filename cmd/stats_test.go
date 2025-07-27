@@ -22,7 +22,7 @@ func TestStatsHandler(t *testing.T) {
 					{}: 0,
 				},
 			},
-			expRes: `{"stats":"no stats available yet"}` + "\n",
+			expRes: `{"most_frequent_request":"no stats available yet"}` + "\n",
 		},
 		{
 			name: "happy path",
@@ -31,7 +31,7 @@ func TestStatsHandler(t *testing.T) {
 					{Int1: 3, Int2: 5, Limit: 100, Str1: "fizz", Str2: "buzz"}: 10,
 				},
 			},
-			expRes: `{"stats":{"parameters":{"int1":3,"int2":5,"limit":100,"str1":"fizz","str2":"buzz"},"hits":10}}` + "\n",
+			expRes: `{"most_frequent_request":{"parameters":{"int1":3,"int2":5,"limit":100,"str1":"fizz","str2":"buzz"},"hits":10}}` + "\n",
 		},
 	}
 	app := &application{
