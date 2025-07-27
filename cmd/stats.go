@@ -14,9 +14,9 @@ func (app *application) statsHandler(w http.ResponseWriter, r *http.Request) {
 
 	var res wrapper
 	if maxHits == 0 {
-		res = wrapper{"stats": "no stats available yet"}
+		res = wrapper{"most_frequent_request": "no stats available yet"}
 	} else {
-		res = wrapper{"stats": response{
+		res = wrapper{"most_frequent_request": response{
 			Parameters: topParams,
 			Hits:       maxHits,
 		}}

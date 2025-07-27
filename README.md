@@ -66,10 +66,15 @@ GET /stats
 **Response**
 ```json
 {
-  "healthcheck": {
-    "status": "available",
-    "environment": "development",
-    "version": "1.0.0"
+  "most_frequent_request": {
+    "parameters": {
+      "int1": 2,
+      "int2": 3,
+      "limit": 10,
+      "str1": "fizz",
+      "str2": "buzz"
+    },
+    "hits": 42
   }
 }
 ```
@@ -98,7 +103,7 @@ You can configure the application using command-line flags at runtime.
 | Flag | Description | Default |
 | ---  |     ---     |  ----   |
 |-port	| The port the server listens on.| 8080 |
-| -env	| The runtime environment.	| development |
+| -env	| The runtime environment (development \| production)	| development |
 | -limiter-enabled	| Enable or disable the rate limiter.	| true |
 | -limiter-rate	| Max number of requests per second for the rate limiter.|	2 |
 | -limiter-burst |	The burst allowance for the rate limiter.	| 4 |
@@ -108,8 +113,8 @@ You can configure the application using command-line flags at runtime.
 ## Local Setup
 
 ### Prerequisites
-**Make**: A build automation tool.
-**Docker**: For running the application in a containerized environment.
+- **Make**: A build automation tool.
+- **Docker**: For running the application in a containerized environment.
 
 ### Running the application
 To run the server locally with live-reload enabled for development:
@@ -120,7 +125,7 @@ The application will be available at http://localhost:8080.
 
 To run the application using the standard Go toolchain:
 ```shell
-% make dev
+% make run
 ```
 
 ## Developer Commands
@@ -128,7 +133,7 @@ Run `make help` to see a list of all available developer commands.
 ```shell
 % fizz-buzz-rest % make                             
 Usage:
-  run     run the fuzzbuzz api with go cli
+  run     run the fizzbuzz api with standard Go toolchain
   dev     run containerized fizzbuzz api with live-reload
   build   build the application binaries (strips out both symbol tables and DWARF debugging information to reduce size)
   tidy    tidy module dependencies and format .go files
@@ -150,9 +155,10 @@ The CI configuration can be found in .github/workflows/pr-build-test.yml.
 > **Tests must pass before a PR can be merged** (enforced via GitHub branch protection rules).
 
 
-CI configuration lives in [`/.github/workflows/ci.yml`](.github/workflows/ci.yml).
+CI configuration lives in [`/.github/workflows/ci.yml`](.github/workflows/pr-build-test.yml).
 
 ## Key Behaviors
 - If str1 or str2 parameters are submitted empty, they are treated as valid empty strings.
-- int1 and int2 can be positive or negative integers, and are mandatory query parameters
-- Statistics gathered by the /stats endpoint are ephemeral and will be reset if the application restarts
+- int1 and int2 are required query parameters and may be positive or negative integers.
+- Additional query parameters (not specified in the API spec) are ignored without causing errors.
+- Statistics gathered by the /stats endpoint are ephemeral and will be reset if the application restarts (in-memory only, no persistence)
