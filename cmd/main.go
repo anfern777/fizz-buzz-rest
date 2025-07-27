@@ -42,7 +42,7 @@ func main() {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
 	flag.StringVar(&cfg.env, "env", "development", "Environment (development | production)")
-	flag.IntVar(&cfg.port, "port", 8000, "server port")
+	flag.IntVar(&cfg.port, "port", 8080, "server port")
 
 	flag.Float64Var(&cfg.limiter.rate, "limiter-rate", 2, "Rate limiter requests per second")
 	flag.IntVar(&cfg.limiter.burst, "limiter-burst", 4, "Rate limiter burst limit")
