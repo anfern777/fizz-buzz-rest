@@ -15,12 +15,13 @@ This version exposes a flexible and parameterized REST API that lets you customi
 - GitHub Actions
 
 ## Project Structure
-
+```bash
 ├── cmd/ # application entry point
 ├── internal/ # application core logic
 ├── deploy/ # configuration files required for production deployment
 ├── Makefile 
 └── .github/workflows/ci.yml # CI Pipeline 
+```
 
 ## API Endpoints
 
