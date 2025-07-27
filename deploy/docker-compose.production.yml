@@ -1,0 +1,31 @@
+services:
+  api:
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile.production
+    container_name: fizzbuzz_app
+    restart: unless-stopped
+    networks:
+      - fizzbuzz_prod
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: nginx_reverse_proxy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      # - ./self-signed.crt:/etc/nginx/self-signed.crt:ro
+      # - ./self-signed.key:/etc/nginx/self-signed.key:ro
+    networks:
+      - fizzbuzz_prod
+    depends_on:
+      - api
+
+networks:
+  fizzbuzz_prod:
+    driver: bridge
