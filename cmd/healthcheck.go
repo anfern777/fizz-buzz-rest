@@ -17,7 +17,7 @@ func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Reques
 		Version:     version,
 	}
 
-	err := app.toJSONResponse(w, http.StatusOK, &wrapper{"health": health}, nil)
+	err := app.toJSONResponse(w, http.StatusOK, &wrapper{"healthcheck": health}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}

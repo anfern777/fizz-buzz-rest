@@ -37,7 +37,7 @@ func TestFizzbuzzHandler_Success(t *testing.T) {
 	}
 
 	body, _ := io.ReadAll(resp.Body)
-	expected := `{"result":["1","2","fizz","4","buzz","fizz","7","8","fizz","buzz","11","fizz","13","14","fizzbuzz"]}` + "\n"
+	expected := `{"fizzbuzz":["1","2","fizz","4","buzz","fizz","7","8","fizz","buzz","11","fizz","13","14","fizzbuzz"]}` + "\n"
 	if string(body) != expected {
 		t.Errorf("expected response body:\n%s\ngot:\n%s", expected, string(body))
 	}

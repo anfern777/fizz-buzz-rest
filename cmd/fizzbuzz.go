@@ -41,7 +41,7 @@ func (app *application) fizzbuzzHandler(w http.ResponseWriter, r *http.Request) 
 
 	res := fizzbuzz(params)
 
-	err := app.toJSONResponse(w, http.StatusOK, &wrapper{"result": res}, nil)
+	err := app.toJSONResponse(w, http.StatusOK, &wrapper{"fizzbuzz": res}, nil)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)
 	}
