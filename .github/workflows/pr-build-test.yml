@@ -1,4 +1,4 @@
-name: CI
+name: Build, Test and Audit
 
 on:
   pull_request:
