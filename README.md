@@ -54,7 +54,7 @@ GET /healthcheck
 ```
 **Response**
 ```json
-{"healthcheck":{"status":"available","env":"development","version":"(devel)"}}
+{"healthcheck":{"status":"available","env":"development","version":"1.0.0"}}
 ```
 
 ### `GET /stats`
@@ -94,7 +94,7 @@ This project uses **GitHub Actions** for continuous integration.
 ### Pull Request Checks
 
 All code changes must go through a Pull Request into the `main` branch.  
-CI will:
+GitHub Actions workflow is triggered by every new PR, and will:
 
 - Build the application
 - Run unit tests with race detection
@@ -109,7 +109,3 @@ CI configuration lives in [`/.github/workflows/ci.yml`](.github/workflows/ci.yml
 - If str1 or str2 parameters are empty, the query is valid, and they are taken as empty strings `""`
 - int1 and int2 can be positive or negative integers, and are mandatory query parameters
 - stats endpoint statistics are ephemeral - they are not persisted in a database and are lost if the application goes down
-
-## TODOs
-- version - (devel)
-- add flags to setup instructions
