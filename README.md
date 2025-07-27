@@ -14,6 +14,14 @@ This version exposes a flexible and parameterized REST API that lets you customi
 - Docker
 - GitHub Actions
 
+## Project Structure
+
+├── cmd/ # application entry point
+├── internal/ # application core logic
+├── deploy/ # configuration files required for production deployment
+├── Makefile 
+└── .github/workflows/ci.yml # CI Pipeline 
+
 ## API Endpoints
 
 ### `GET /fizzbuzz`
@@ -78,18 +86,28 @@ Run `make` (or `make help`) to display available commands and their description:
 $ make 
 ```
 
-## Project Structure
+## Continuous Integration
 
-├── cmd/ # application entry point
-├── internal/ # application core logic
-├── deploy/ # configuration files needed for production deployment
-├── Makefile 
-└── .github/workflows/ci.yml # CI Pipeline 
+This project uses **GitHub Actions** for continuous integration.
+
+### Pull Request Checks
+
+All code changes must go through a Pull Request into the `main` branch.  
+CI will:
+
+- Build the application
+- Run unit tests with race detection
+- Perform static analysis and dependency audits
+
+> **Tests must pass before a PR can be merged** (enforced via GitHub branch protection rules).
+
+
+CI configuration lives in [`/.github/workflows/ci.yml`](.github/workflows/ci.yml).
 
 ## Assumptions
 - If str1 or str2 parameters are empty, the query is valid, and they are taken as empty strings `""`
 - int1 and int2 can be positive or negative integers, and are mandatory query parameters
-- stats endpoint statistics are ephemeral - they are not persisted in a database and are lost if the application goes down  
+- stats endpoint statistics are ephemeral - they are not persisted in a database and are lost if the application goes down
 
 ## TODOs
 - version - (devel)

@@ -3,11 +3,7 @@ name: CI
 on:
   pull_request:
     branches:
-      - main
-    paths:
-      - cmd/**
-      - internal/**
-    
+      - main    
 
 jobs:
   build-and-test:
