@@ -41,7 +41,7 @@ func main() {
 	var cfg config
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 
-	flag.StringVar(&cfg.env, "env", "development", "Environment (development | staging | production)")
+	flag.StringVar(&cfg.env, "env", "development", "Environment (development | production)")
 	flag.IntVar(&cfg.port, "port", 8000, "server port")
 
 	flag.Float64Var(&cfg.limiter.rate, "limiter-rate", 2, "Rate limiter requests per second")
