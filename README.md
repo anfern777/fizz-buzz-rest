@@ -66,10 +66,15 @@ GET /stats
 **Response**
 ```json
 {
-  "healthcheck": {
-    "status": "available",
-    "environment": "development",
-    "version": "1.0.0"
+  "most_frequent_request": {
+    "parameters": {
+      "int1": 2,
+      "int2": 3,
+      "limit": 10,
+      "str1": "fizz",
+      "str2": "buzz"
+    },
+    "hits": 42
   }
 }
 ```
