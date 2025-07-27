@@ -1,9 +1,13 @@
 name: CI
 
 on:
-  push:
+  pull_request:
     branches:
       - main
+    paths:
+      - cmd/**
+      - internal/**
+    
 
 jobs:
   build-and-test:

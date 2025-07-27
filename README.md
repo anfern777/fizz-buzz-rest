@@ -2,8 +2,6 @@
 
 This is a REST server that implements an extended version of the classic **FizzBuzz** problem, designed for a technical assessment.
 
-## Problem Description
-
 The classic FizzBuzz task is to print numbers from 1 to 100, replacing:
 - multiples of 3 with `"fizz"`,
 - multiples of 5 with `"buzz"`,
@@ -11,6 +9,10 @@ The classic FizzBuzz task is to print numbers from 1 to 100, replacing:
 
 This version exposes a flexible and parameterized REST API that lets you customize the numbers and the replacement strings.
 
+## Tech Stack
+- Go >= 1.24
+- Docker
+- GitHub Actions
 
 ## API Endpoints
 
@@ -25,10 +27,70 @@ Generates a FizzBuzz sequence using the parameters you provide.
 - `str1` (string): Replacement for `int1` multiples
 - `str2` (string): Replacement for `int2` multiples
 
-### `GET /healcheck`
+**Example**:
+```shell 
+GET /fizzbuzz?int1=2&int2=3&limit=5&str1=fizz&str2=buzz
+```
+**Response**
+```json
+{"fizzbuzz":["1","fizz","buzz","fizz","5","fizzbuzz","7","fizz","buzz","fizz"]}
+```
+
+### `GET /healthcheck`
 
 Returns the current running state of the server.
+
+```shell 
+GET /healthcheck
+```
+**Response**
+```json
+{"healthcheck":{"status":"available","env":"development","version":"(devel)"}}
+```
 
 ### `GET /stats`
 
 Returns the parameters corresponding to the most used request, as well as the number of hits for this request
+
+```shell 
+GET /stats
+```
+**Response**
+```json
+{"stats":{"parameters":{"int1":2,"int2":3,"limit":5,"str1":"fizz","str2":"buzz"},"hits":4}}
+```
+
+## Local Setup
+
+### Running locally, with make
+```shell
+$ make run
+```
+
+### Running locally, with docker (with live-reload)
+```shell
+$ make dev
+```
+
+## Developer Commands
+Run `make` (or `make help`) to display available commands and their description:
+```shell
+$ make 
+```
+
+## Project Structure
+
+├── cmd/ # application entry point
+├── internal/ # application core logic
+├── deploy/ # configuration files needed for production deployment
+├── Makefile 
+└── .github/workflows/ci.yml # CI Pipeline 
+
+## Assumptions
+- If str1 or str2 parameters are empty, the query is valid, and they are taken as empty strings `""`
+- int1 and int2 can be positive or negative integers, and are mandatory query parameters
+- stats endpoint statistics are ephemeral - they are not persisted in a database and are lost if the application goes down  
+
+## TODOs
+- version - (devel)
+- add flags to setup instructions
