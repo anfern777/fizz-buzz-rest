@@ -7,7 +7,6 @@ on:
 
 jobs:
   build-and-test:
-    name: Build, Test, and Audit
     runs-on: ubuntu-latest
 
     steps:
