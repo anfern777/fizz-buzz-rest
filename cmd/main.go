@@ -8,7 +8,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/anfern777/fizz-buzz-rest/internal"
+	"github.com/anfern777/fizz-buzz-rest/internal/vcs"
 )
 
 type config struct {
@@ -34,7 +34,7 @@ type application struct {
 }
 
 var (
-	version = internal.Version()
+	version = vcs.Version()
 )
 
 func main() {

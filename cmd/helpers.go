@@ -3,29 +3,10 @@ package main
 import (
 	"encoding/json"
 	"maps"
-	"net"
 	"net/http"
-	"strings"
 )
 
 type wrapper map[string]any
-
-func getRemoteIP(r *http.Request) string {
-	if xff := r.Header.Get("X-Forwarded-For"); xff != "" {
-		return strings.TrimSpace(strings.Split(xff, ",")[0])
-	}
-
-	if xrIP := r.Header.Get("X-Real-Ip"); xrIP != "" {
-		return xrIP
-	}
-
-	ip, _, err := net.SplitHostPort(r.RemoteAddr)
-	if err != nil {
-		return ""
-	}
-
-	return ip
-}
 
 func (app *application) toJSONResponse(w http.ResponseWriter, status int, data any, headers http.Header) error {
 	maps.Copy(w.Header(), headers)

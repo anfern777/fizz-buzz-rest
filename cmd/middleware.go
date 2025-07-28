@@ -8,6 +8,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/anfern777/fizz-buzz-rest/internal/requtils"
 	"golang.org/x/time/rate"
 )
 
@@ -87,7 +88,7 @@ func (app *application) rateLimiter(next http.Handler) http.Handler {
 	}()
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ip := getRemoteIP(r)
+		ip := requtils.GetRemoteIP(r)
 
 		mu.Lock()
 
